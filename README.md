@@ -96,10 +96,8 @@ This is a fan-made project inspired by Disney's Moana. All character names, sett
 
 
 ### Long-term Goals
-- [ ] Integration with other Disney properties
+- [ ] Integration with other Disney properties ( Frozen?)
 - [ ] Advanced story customization options
-- [ ] Educational content about Polynesian culture
-- [ ] Collaborative story creation features
 
 ---
 
