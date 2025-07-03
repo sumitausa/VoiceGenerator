@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moana Adventure Story Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dbeafe 0%, #a7f3d0 50%, #bbf7d0 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            border: 4px solid #5eead4;
+        }
+        
+        .header {
+            text-center;
+            margin-bottom: 40px;
+        }
+        
+        .icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: #14b8a6;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #5eead4;
+            border-radius: 16px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .input:focus {
+            border-color: #14b8a6;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #14b8a6 0%, #0891b2 100%);
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+            transform: scale(1.02);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress {
+            text-align: center;
+            margin-top: 32px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #14b8a6;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        
+        .character-btn {
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .character-btn.selected {
+            border-color: #14b8a6;
+            background: #f0fdfa;
+            color: #0f766e;
+        }
+        
+        .character-btn:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        .emoji {
+            font-size: 24px;
+        }
+        
+        .style-btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-align: left;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        
+        .style-btn.selected {
+            border-color: #f59e0b;
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .style-btn:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+        
+        .style-emoji {
+            font-size: 32px;
+        }
+        
+        .style-content {
+            flex: 1;
+        }
+        
+        .style-label {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .style-desc {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .textarea {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: none;
+            height: 128px;
+        }
+        
+        .textarea:focus {
+            border-color: #10b981;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            flex: 2;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #059669 0%, #0f766e 100%);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 48px;
+        }
+        
+        .loading-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            color: #5eead4;
+            animation: pulse 2s infinite;
+        }
+        
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #14b8a6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .story-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .story-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            border: 4px solid #5eead4;
+        }
+        
+        .story-header {
+            background: linear-gradient(135deg, #14b8a6 0%, #0891b2 100%);
+            padding: 24px;
+            text-align: center;
+            color: white;
+        }
+        
+        .story-content {
+            padding: 32px;
+        }
+        
+        .story-text {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdfa 100%);
+            border-radius: 16px;
+            padding: 24px;
+            border-left: 4px solid #14b8a6;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-size: 18px;
+            color: #1f2937;
+            white-space: pre-wrap;
+        }
+        
+        .controls-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #fef7cd 0%, #fce7f3 100%);
+            border-radius: 16px;
+            border: 2px solid #f9a8d4;
+        }
+        
+        .controls-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .controls-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .play-btn {
+            background: #14b8a6;
+            color: white;
+        }
+        
+        .play-btn:hover {
+            background: #0f766e;
+        }
+        
+        .pause-btn {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .pause-btn:hover {
+            background: #d97706;
+        }
+        
+        .stop-btn {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .stop-btn:hover {
+            background: #4b5563;
+        }
+        
+        .question-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
+            border-radius: 16px;
+            border: 2px solid #f9a8d4;
+        }
+        
+        .question-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .question-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #f9a8d4;
+            border-radius: 12px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .question-input:focus {
+            border-color: #ec4899;
+        }
+        
+        .ask-btn {
+            background: #ec4899;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ask-btn:hover {
+            background: #db2777;
+        }
+        
+        .ask-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .voice-btn {
+            background: #a855f7;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .voice-btn:hover {
+            background: #9333ea;
+        }
+        
+        .listening {
+            animation: pulse 1s infinite;
+        }
+        
+        .question-response {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid #f9a8d4;
+            margin-top: 12px;
+        }
+        
+        .response-label {
+            font-size: 12px;
+            color: #ec4899;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .response-text {
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .tips {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 12px;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #14b8a6;
+        }
+        
+        .final-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .sweet-dreams {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #14b8a6;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #14b8a6 0%, #0891b2 100%);
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .reset-btn:hover {
+            background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- App will be rendered here -->
+    </div>
+
+    <script>
+        // Application State
+        let currentStep = 0;
+        let isGenerating = false;
+        let storyText = '';
+        let isPlaying = false;
+        let isPaused = false;
+        let isListening = false;
+        let lastQuestion = '';
+        let questionResponse = '';
+        let typedQuestion = '';
+        let speechUtterance = null;
+        let speechRecognition = null;
+        
+        const formData = {
+            age: '',
+            characters: [],
+            setting: '',
+            style: '',
+            lesson: ''
+        };
+
+        const characters = [
+            { key: 'moana', name: 'Moana', emoji: '🌺' },
+            { key: 'maui', name: 'Maui', emoji: '🪝' },
+            { key: 'heihei', name: 'Heihei', emoji: '🐓' },
+            { key: 'pua', name: 'Pua', emoji: '🐷' },
+            { key: 'grandmaTala', name: 'Grandma Tala', emoji: '🧙‍♀️' },
+            { key: 'simea', name: 'Simea', emoji: '👧' },
+            { key: 'moni', name: 'Moni', emoji: '🎵' },
+            { key: 'ocean', name: 'The Ocean', emoji: '🌊' }
+        ];
+
+        const settings = [
+            { key: 'motunui', name: 'Motunui Island', emoji: '🏝️' },
+            { key: 'openOcean', name: 'Open Ocean', emoji: '🌊' },
+            { key: 'heartOfTeFiti', name: 'Heart of Te Fiti', emoji: '💚' },
+            { key: 'lalotaiRealm', name: 'Lalotai (Realm of Monsters)', emoji: '🦀' },
+            { key: 'newIsland', name: 'A New Island', emoji: '🗺️' },
+            { key: 'ancientVoyage', name: 'Ancient Voyaging Route', emoji: '⛵' }
+        ];
+
+        const styles = [
+            { value: 'courageous', label: 'Courageous & Brave', emoji: '💪', desc: 'Finding inner strength like Moana' },
+            { value: 'funny', label: 'Funny & Playful', emoji: '😄', desc: 'Silly moments with Heihei and friends' },
+            { value: 'magical', label: 'Magical & Mystical', emoji: '✨', desc: 'Ocean magic and island legends' },
+            { value: 'family', label: 'Family & Heart', emoji: '❤️', desc: 'Ohana and island traditions' },
+            { value: 'exploring', label: 'Exploring & Discovery', emoji: '🧭', desc: 'Wayfinding and new horizons' }
+        ];
+
+        // Story Generation Logic
+        function generateStory() {
+            isGenerating = true;
+            currentStep = 5;
+            render();
+
+            setTimeout(() => {
+                const characterNames = formData.characters.map(char => 
+                    characters.find(c => c.key === char)?.name
+                ).filter(Boolean);
+                
+                const settingName = settings.find(s => s.key === formData.setting)?.name;
+                
+                let story = "";
+                
+                const openings = {
+                    motunui: "On the beautiful island of Motunui, where the coconut trees sway in the warm breeze",
+                    openOcean: "Far out on the endless blue ocean, where the waves dance with the clouds",
+                    heartOfTeFiti: "In the magical realm where Te Fiti's heart glows with life-giving power",
+                    lalotaiRealm: "Deep beneath the ocean's surface in the mysterious realm of Lalotai",
+                    newIsland: "On a newly discovered island where no one had ever set foot before",
+                    ancientVoyage: "Following the ancient star paths that the first wayfinders once traveled"
+                };
+                
+                story += openings[formData.setting] || openings.motunui;
+                
+                if (characterNames.includes('Moana')) {
+                    story += ", Moana felt the ocean calling to her heart. ";
+                } else {
+                    story += ", a brave young wayfinder felt the ocean calling to their heart. ";
+                }
+                
+                const companions = [];
+                if (characterNames.includes('Heihei')) companions.push("Heihei the rooster (who was surprisingly helpful this time)");
+                if (characterNames.includes('Pua')) companions.push("Pua the loyal pig");
+                if (characterNames.includes('Maui')) companions.push("Maui with his magical fishhook");
+                if (characterNames.includes('The Ocean')) companions.push("the Ocean itself as a guide");
+                
+                if (companions.length > 0) {
+                    story += `Joining the adventure ${companions.length === 1 ? 'was' : 'were'} ${companions.join(' and ')}. `;
+                }
+                
+                const styleContent = {
+                    courageous: "When faced with a great challenge, our hero discovered that true courage doesn't mean you're never scared—it means doing what's right even when your heart is pounding like a drum.",
+                    funny: "Along the way, there were plenty of laughs and silly moments. Heihei managed to save the day in the most unexpected way, proving that sometimes the best solutions come from the most surprising places!",
+                    magical: "The ocean sparkled with ancient magic, and the wind carried whispers of the ancestors. Mystical creatures appeared to help guide the way, their wisdom as old as the stars themselves.",
+                    family: "Throughout the journey, the warmth of ohana—family—gave strength and comfort. The love and support of those who care about us can carry us through any storm.",
+                    exploring: "Using the traditional wayfinding skills passed down through generations, our hero learned to read the stars, the currents, and the flight patterns of birds to navigate the vast ocean."
+                };
+                
+                story += styleContent[formData.style] || styleContent.courageous;
+                
+                if (characterNames.includes('Grandma Tala')) {
+                    story += ` Grandma Tala's gentle voice whispered on the wind: "${formData.lesson || 'Trust in yourself, for you have everything you need inside your heart'}." `;
+                } else {
+                    story += ` The ancestors' wisdom echoed across the water: "${formData.lesson || 'Trust in yourself, for you have everything you need inside your heart'}." `;
+                }
+                
+                if (characterNames.includes('Simea')) {
+                    story += "Little Simea's laughter reminded everyone that joy and wonder make every adventure more meaningful. ";
+                }
+                if (characterNames.includes('Moni')) {
+                    story += "Moni's beautiful songs carried across the waves, bringing peace and harmony to all who heard them. ";
+                }
+                
+                story += `
+
+As the golden sun began to set, painting the sky in brilliant shades of orange and pink, our hero realized that the greatest treasure wasn't gold or magical objects—it was the confidence to follow their heart and the knowledge that they were never truly alone.
+
+The gentle ocean waves carried them safely home, where they fell asleep under a blanket of twinkling stars, dreaming of tomorrow's adventures and feeling grateful for the love that surrounds them always.
+
+The end. Sweet dreams, little wayfinder! 🌊✨`;
+                
+                storyText = story;
+                currentStep = 6;
+                isGenerating = false;
+                render();
+            }, 2000);
+        }
+
+        // Voice Functions
+        function playStory() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                speechUtterance = new SpeechSynthesisUtterance(storyText);
+                speechUtterance.rate = 0.8;
+                speechUtterance.pitch = 1.1;
+                speechUtterance.volume = 0.8;
+                
+                const voices = window.speechSynthesis.getVoices();
+                const femaleVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('female') || 
+                    voice.name.toLowerCase().includes('samantha')
+                );
+                if (femaleVoice) speechUtterance.voice = femaleVoice;
+                
+                speechUtterance.onstart = () => {
+                    isPlaying = true;
+                    isPaused = false;
+                    render();
+                };
+                
+                speechUtterance.onend = () => {
+                    isPlaying = false;
+                    isPaused = false;
+                    render();
+                };
+                
+                window.speechSynthesis.speak(speechUtterance);
+            }
+        }
+
+        function pauseStory() {
+            if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                window.speechSynthesis.pause();
+                isPaused = true;
+                render();
+            }
+        }
+
+        function resumeStory() {
+            if (window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+                isPaused = false;
+                render();
+            }
+        }
+
+        function stopStory() {
+            window.speechSynthesis.cancel();
+            isPlaying = false;
+            isPaused = false;
+            render();
+        }
+
+        // Voice Recognition
+        function startListening() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                speechRecognition = new SpeechRecognition();
+                
+                speechRecognition.continuous = false;
+                speechRecognition.interimResults = false;
+                speechRecognition.lang = 'en-US';
+                
+                speechRecognition.onstart = () => {
+                    isListening = true;
+                    render();
+                };
+                
+                speechRecognition.onresult = (event) => {
+                    if (event.results && event.results[0] && event.results[0][0]) {
+                        const question = event.results[0][0].transcript;
+                        lastQuestion = question;
+                        handleQuestion(question);
+                    }
+                };
+                
+                speechRecognition.onerror = () => {
+                    isListening = false;
+                    questionResponse = "Sorry, I couldn't hear you clearly. Try typing your question instead!";
+                    render();
+                };
+                
+                speechRecognition.onend = () => {
+                    isListening = false;
+                    render();
+                };
+                
+                speechRecognition.start();
+            } else {
+                alert('Voice recognition not supported. Please use the text input!');
+            }
+        }
+
+        function stopListening() {
+            if (speechRecognition) {
+                speechRecognition.stop();
+            }
+            isListening = false;
+            render();
+        }
+
+        // Question Handling
+        function handleQuestion(question) {
+            const lowerQuestion = question.toLowerCase();
+            let response = '';
+            
+            const selectedCharacterNames = formData.characters.map(char => 
+                characters.find(c => c.key === char)?.name
+            ).filter(Boolean);
+            
+            if (lowerQuestion.includes('who') && (lowerQuestion.includes('character') || lowerQuestion.includes('story'))) {
+                response = `The characters in your story are ${selectedCharacterNames.join(', ')}! Each one brings something special to the adventure.`;
+            } else if (lowerQuestion.includes('where') && (lowerQuestion.includes('happen') || lowerQuestion.includes('take place'))) {
+                const settingName = settings.find(s => s.key === formData.setting)?.name;
+                response = `Your adventure takes place at ${settingName}! It's a magical place full of wonder.`;
+            } else if (lowerQuestion.includes('moana')) {
+                if (selectedCharacterNames.includes('Moana')) {
+                    response = `Moana is the brave wayfinder who follows her heart! She's the chief's daughter who was chosen by the ocean.`;
+                } else {
+                    response = `Moana isn't in this story, but she's the brave island girl who restored Te Fiti's heart!`;
+                }
+            } else if (lowerQuestion.includes('heihei')) {
+                if (selectedCharacterNames.includes('Heihei')) {
+                    response = `Heihei is the silly rooster who's actually braver than he looks! He always manages to help save the day.`;
+                } else {
+                    response = `Heihei is Moana's pet rooster - he's not very smart but he's very loyal and brave!`;
+                }
+            } else if (lowerQuestion.includes('maui')) {
+                if (selectedCharacterNames.includes('Maui')) {
+                    response = `Maui is the shapeshifting demigod with his magical fishhook! He can turn into any animal and is very strong.`;
+                } else {
+                    response = `Maui is a demigod who can shapeshift! He helped Moana on her journey and has a magical fishhook.`;
+                }
+            } else if (lowerQuestion.includes('grandma') || lowerQuestion.includes('tala')) {
+                response = `Grandma Tala is very wise and loves the ocean. She always encourages following your heart and believing in yourself!`;
+            } else if (lowerQuestion.includes('ocean')) {
+                response = `The ocean is magical and alive! It chose Moana and helps guide wayfinders on their journeys. It's like a friend that's always there.`;
+            } else if (lowerQuestion.includes('lesson') || lowerQuestion.includes('learn')) {
+                response = `The lesson in your story is: ${formData.lesson}. It's something very important to remember!`;
+            } else {
+                response = `That's a great question! Remember, like Moana says, the ocean calls to those who are brave enough to listen. What else would you like to know about your story?`;
+            }
+            
+            questionResponse = response;
+            render();
+            
+            // Speak the response
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(response);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.2;
+                utterance.volume = 0.8;
+                
+                setTimeout(() => {
+                    window.speechSynthesis.speak(utterance);
+                }, 100);
+            }
+        }
+
+        function handleTypedQuestion() {
+            if (typedQuestion.trim()) {
+                lastQuestion = typedQuestion;
+                handleQuestion(typedQuestion);
+                typedQuestion = '';
+                render();
+            }
+        }
+
+        // Navigation
+        function nextStep() {
+            currentStep++;
+            render();
+        }
+
+        function prevStep() {
+            currentStep--;
+            render();
+        }
+
+        function resetForm() {
+            stopStory();
+            stopListening();
+            currentStep = 0;
+            storyText = '';
+            isGenerating = false;
+            lastQuestion = '';
+            questionResponse = '';
+            typedQuestion = '';
+            formData.age = '';
+            formData.characters = [];
+            formData.setting = '';
+            formData.style = '';
+            formData.lesson = '';
+            render();
+        }
+
+        // Validation
+        function canProceed() {
+            switch (currentStep) {
+                case 0: return formData.age !== '';
+                case 1: return formData.characters.length > 0;
+                case 2: return formData.setting !== '';
+                case 3: return formData.style !== '';
+                case 4: return formData.lesson.trim() !== '';
+                default: return true;
+            }
+        }
+
+        // Event Handlers
+        function handleCharacterToggle(character) {
+            if (formData.characters.includes(character)) {
+                formData.characters = formData.characters.filter(c => c !== character);
+            } else {
+                formData.characters.push(character);
+            }
+            render();
+        }
+
+        function handleAgeChange(event) {
+            formData.age = event.target.value;
+            render();
+        }
+
+        function handleSettingSelect(setting) {
+            formData.setting = setting;
+            render();
+        }
+
+        function handleStyleSelect(style) {
+            formData.style = style;
+            render();
+        }
+
+        function handleLessonChange(event) {
+            formData.lesson = event.target.value;
+            render();
+        }
+
+        function handleQuestionChange(event) {
+            typedQuestion = event.target.value;
+            render();
+        }
+
+        function handleQuestionKeyPress(event) {
+            if (event.key === 'Enter') {
+                handleTypedQuestion();
+            }
+        }
+
+        // Render Functions
+        function renderStep0() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="header">
+                            <div class="icon">🌊</div>
+                            <h1 class="title">How old is your little wayfinder?</h1>
+                            <p class="subtitle">This helps us choose the perfect vocabulary for your ocean adventure</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input 
+                                type="number" 
+                                class="input" 
+                                placeholder="Enter age (2-12)" 
+                                min="2" 
+                                max="12" 
+                                value="${formData.age}"
+                                onchange="handleAgeChange(event)"
+                            />
+                        </div>
+                        
+                        <button 
+                            class="btn" 
+                            onclick="nextStep()" 
+                            ${!canProceed() ? 'disabled' : ''}
+                        >
+                            Set Sail →
+                        </button>
+                        
+                        <div class="progress">
+                            <div class="progress-text">Step 1 of 5</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep1() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="header">
+                            <div class="icon">❤️</div>
+                            <h1 class="title">Which Moana characters should join the adventure?</h1>
+                            <p class="subtitle">Pick your favorite friends from Motunui and beyond</p>
+                        </div>
+                        
+                        <div class="character-grid">
+                            ${characters.map(character => `
+                                <button 
+                                    class="character-btn ${formData.characters.includes(character.key) ? 'selected' : ''}"
+                                    onclick="handleCharacterToggle('${character.key}')"
+                                >
+                                    <span class="emoji">${character.emoji}</span>
+                                    <span>${character.name}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="prevStep()">
+                                ← Back
+                            </button>
+                            <button 
+                                class="btn btn-primary" 
+                                onclick="nextStep()" 
+                                ${!canProceed() ? 'disabled' : ''}
+                            >
+                                Set Sail →
+                            </button>
+                        </div>
+                        
+                        <div class="progress">
+                            <div class="progress-text">Step 2 of 5</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep2() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="header">
+                            <div class="icon">⭐</div>
+                            <h1 class="title">Where should your adventure take place?</h1>
+                            <p class="subtitle">Choose the perfect setting for your Moana story</p>
+                        </div>
+                        
+                        <div class="character-grid">
+                            ${settings.map(setting => `
+                                <button 
+                                    class="character-btn ${formData.setting === setting.key ? 'selected' : ''}"
+                                    onclick="handleSettingSelect('${setting.key}')"
+                                >
+                                    <span class="emoji">${setting.emoji}</span>
+                                    <span>${setting.name}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="prevStep()">
+                                ← Back
+                            </button>
+                            <button 
+                                class="btn btn-primary" 
+                                onclick="nextStep()" 
+                                ${!canProceed() ? 'disabled' : ''}
+                            >
+                                Set Sail →
+                            </button>
+                        </div>
+                        
+                        <div class="progress">
+                            <div class="progress-text">Step 3 of 5</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep3() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="header">
+                            <div class="icon">📖</div>
+                            <h1 class="title">What kind of adventure would you like?</h1>
+                            <p class="subtitle">Choose the tone that fits your perfect Moana story</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            ${styles.map(style => `
+                                <button 
+                                    class="style-btn ${formData.style === style.value ? 'selected' : ''}"
+                                    onclick="handleStyleSelect('${style.value}')"
+                                >
+                                    <span class="style-emoji">${style.emoji}</span>
+                                    <div class="style-content">
+                                        <div class="style-label">${style.label}</div>
+                                        <div class="style-desc">${style.desc}</div>
+                                    </div>
+                                </button>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="prevStep()">
+                                ← Back
+                            </button>
+                            <button 
+                                class="btn btn-primary" 
+                                onclick="nextStep()" 
+                                ${!canProceed() ? 'disabled' : ''}
+                            >
+                                Set Sail →
+                            </button>
+                        </div>
+                        
+                        <div class="progress">
+                            <div class="progress-text">Step 4 of 5</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep4() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="header">
+                            <div class="icon">💚</div>
+                            <h1 class="title">What lesson should your story share?</h1>
+                            <p class="subtitle">What important message should they learn from their adventure?</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea 
+                                class="textarea" 
+                                placeholder="Examples: Following your heart like Moana, being brave in scary situations, helping your community, listening to your ancestors..."
+                                onchange="handleLessonChange(event)"
+                            >${formData.lesson}</textarea>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="prevStep()">
+                                ← Back
+                            </button>
+                            <button 
+                                class="btn btn-primary" 
+                                onclick="generateStory()" 
+                                ${!canProceed() ? 'disabled' : ''}
+                            >
+                                ✨ Create Adventure
+                            </button>
+                        </div>
+                        
+                        <div class="progress">
+                            <div class="progress-text">Step 5 of 5</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep5() {
+            return `
+                <div class="container">
+                    <div class="card">
+                        <div class="loading">
+                            <div class="loading-icon">🌊</div>
+                            <h2 class="title">The ocean is creating your story...</h2>
+                            <p class="subtitle">Moana and her friends are preparing an adventure just for you...</p>
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStep6() {
+            return `
+                <div class="story-container">
+                    <div class="story-card">
+                        <div class="story-header">
+                            <h1 class="title">🌊 Your Moana adventure is ready!</h1>
+                            <p class="subtitle">The ocean has chosen you for this tale!</p>
+                        </div>
+                        
+                        <div class="story-content">
+                            <div class="story-text">${storyText || "The ocean is calling, and your adventure is about to begin..."}</div>
+                            
+                            <!-- Voice Controls -->
+                            <div class="controls-section">
+                                <div class="controls-header">
+                                    <span>🔊</span>
+                                    <span>Listen to your story</span>
+                                </div>
+                                <div class="controls-buttons">
+                                    ${!isPlaying && !isPaused ? `
+                                        <button class="control-btn play-btn" onclick="playStory()">
+                                            ▶️ Play Story
+                                        </button>
+                                    ` : ''}
+                                    ${isPlaying && !isPaused ? `
+                                        <button class="control-btn pause-btn" onclick="pauseStory()">
+                                            ⏸️ Pause
+                                        </button>
+                                    ` : ''}
+                                    ${isPaused ? `
+                                        <button class="control-btn play-btn" onclick="resumeStory()">
+                                            ▶️ Resume
+                                        </button>
+                                    ` : ''}
+                                    ${(isPlaying || isPaused) ? `
+                                        <button class="control-btn stop-btn" onclick="stopStory()">
+                                            ⏹️ Stop
+                                        </button>
+                                    ` : ''}
+                                </div>
+                                ${isPlaying ? `
+                                    <div class="status">
+                                        🎵 Now reading your story...
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- Ask Questions Section -->
+                            <div class="question-section">
+                                <div class="controls-header">
+                                    <span>💭</span>
+                                    <span>Ask questions about your story!</span>
+                                </div>
+                                
+                                <div class="question-input-group">
+                                    <input 
+                                        type="text" 
+                                        class="question-input" 
+                                        placeholder="Ask about characters, setting, or anything else..."
+                                        value="${typedQuestion}"
+                                        onchange="handleQuestionChange(event)"
+                                        onkeypress="handleQuestionKeyPress(event)"
+                                    />
+                                    <button 
+                                        class="ask-btn" 
+                                        onclick="handleTypedQuestion()"
+                                        ${!typedQuestion.trim() ? 'disabled' : ''}
+                                    >
+                                        Ask
+                                    </button>
+                                </div>
+                                
+                                <div style="text-align: center; margin: 12px 0;">
+                                    <button 
+                                        class="voice-btn ${isListening ? 'listening' : ''}" 
+                                        onclick="${isListening ? 'stopListening()' : 'startListening()'}"
+                                    >
+                                        ${isListening ? '🔴 Stop' : '🎤 Try Voice'}
+                                    </button>
+                                </div>
+
+                                ${isListening ? `
+                                    <div class="status">
+                                        🎤 Listening... speak clearly!
+                                    </div>
+                                ` : ''}
+
+                                ${lastQuestion ? `
+                                    <div class="question-response">
+                                        <div class="response-label">You asked:</div>
+                                        <div class="response-text">"${lastQuestion}"</div>
+                                    </div>
+                                ` : ''}
+
+                                ${questionResponse ? `
+                                    <div class="question-response">
+                                        <div class="response-label">Moana's friend says:</div>
+                                        <div class="response-text">${questionResponse}</div>
+                                    </div>
+                                ` : ''}
+
+                                <div class="tips">
+                                    💡 Try asking: "Who are the characters?" • "Where does the story happen?" • "Tell me about Moana"
+                                </div>
+                            </div>
+                            
+                            <div class="final-section">
+                                <div class="sweet-dreams">
+                                    <span>⭐</span>
+                                    <span>Sweet dreams, wayfinder!</span>
+                                    <span>⭐</span>
+                                </div>
+                                
+                                <button class="reset-btn" onclick="resetForm()">
+                                    ✨ Create Another Adventure 🌊
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main Render Function
+        function render() {
+            const app = document.getElementById('app');
+            
+            switch (currentStep) {
+                case 0:
+                    app.innerHTML = renderStep0();
+                    break;
+                case 1:
+                    app.innerHTML = renderStep1();
+                    break;
+                case 2:
+                    app.innerHTML = renderStep2();
+                    break;
+                case 3:
+                    app.innerHTML = renderStep3();
+                    break;
+                case 4:
+                    app.innerHTML = renderStep4();
+                    break;
+                case 5:
+                    app.innerHTML = renderStep5();
+                    break;
+                case 6:
+                    app.innerHTML = renderStep6();
+                    break;
+                default:
+                    app.innerHTML = renderStep0();
+            }
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            render();
+        });
+
+        // Initialize voices for better speech synthesis
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+    </script>
+</body>
+</html>
